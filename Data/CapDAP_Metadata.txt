@@ -1,0 +1,466 @@
+NOTE: This is the metadata I was provided with when I downloaded the data from the data repository.
+
+Dataset title:  CSM08 Small mammal host-parasite sampling data for 16 linear trapping transects located in 8 LTER burn treatment watersheds at Konza Prairie
+
+Dataset ID:  doi:10.6073/pasta/69109c56fcf21a30a8d37369cb47f8de
+Dataset Creator
+
+	Name:		Andrew Hope
+	
+	Address:
+			110 Bushnell Hall, Division of Biology, Kansas State University
+			Manhattan, KS 66506  US
+	
+	Phone:		785-532-0155
+	Email:		ahope@ksu.edu
+
+
+Metadata Provider
+
+	Organization:	Konza LTER
+	URL:		http://www.konza.ksu.edu/
+
+
+Dataset Abstract
+
+
+
+Dataset Keywords
+
+	Disturbance
+	Populations
+	Consumers
+	community turnover
+	Consumers
+	Fire
+	genetic resources
+	helminth
+	Kansas
+	LTER-KNZ
+	Konza Prairie
+	Konza Prairie Biological Station
+	parasite
+	species composition
+	tick
+	relative abundance
+	reversal
+	prairie
+	shrews
+	shrubs
+	small mammals
+	seasonal
+	rodents
+
+
+Intellectual Rights
+
+
+
+Distribution
+
+	Online distribution:  http://lter.konza.ksu.edu/content/csm08-small-mammal-host-parasite-sampling-data-16-linear-trapping-transects-located-8-lter
+
+
+Geographic Coverage
+
+
+	Bounding Coordinates
+
+		Geographic description:	1D: Ungrazed and scheduled prescribed burned annually in the spring.
+		West bounding coordinate:	-96.5658
+		East bounding coordinate:	-96.5594
+		North bounding coordinate:	39.0841
+		South bounding coordinate:	39.0732
+	
+		Geographic description:	20B: Ungrazed and scheduled prescribed burned every 20 years in the spring.
+		West bounding coordinate:	-96.5808
+		East bounding coordinate:	-96.5741
+		North bounding coordinate:	39.0758
+		South bounding coordinate:	39.0693
+	
+		Geographic description:	4B: Ungrazed and scheduled prescribed burned every 4 years in the spring
+		West bounding coordinate:	-96.6035
+		East bounding coordinate:	-96.5924
+		North bounding coordinate:	39.0802
+		South bounding coordinate:	39.0712
+	
+		Geographic description:	4F: Ungrazed and scheduled prescribed burned every 4 years in the spring
+		West bounding coordinate:	-96.5733
+		East bounding coordinate:	-96.5691
+		North bounding coordinate:	39.0766
+		South bounding coordinate:	39.0711
+	
+		Geographic description:	R1A: Ungrazed and scheduled unburned through 2000, scheduled prescribed burned annually in the spring beginning 2001.
+		West bounding coordinate:	-96.6147
+		East bounding coordinate:	-96.6066
+		North bounding coordinate:	39.077
+		South bounding coordinate:	39.067
+	
+		Geographic description:	R20A: Ungrazed and scheduled prescribed burned annually through 2000, scheduled prescribed burned every 20 years in the spring thereafter.
+		West bounding coordinate:	-96.6145
+		East bounding coordinate:	-96.6055
+		North bounding coordinate:	39.0731
+		South bounding coordinate:	39.0664
+	
+		Geographic description:	SpB: Ungrazed and scheduled prescribed burned annually in the spring.
+		West bounding coordinate:	-96.5913
+		East bounding coordinate:	-96.5838
+		North bounding coordinate:	39.0756
+		South bounding coordinate:	39.0669
+	
+		Geographic description:	SuB: Ungrazed and scheduled prescribed burned every 2 years in the summer
+		West bounding coordinate:	-96.5694
+		East bounding coordinate:	-96.565
+		North bounding coordinate:	39.0768
+		South bounding coordinate:	39.0712
+	
+
+
+
+Temporal Coverage
+
+	Start Date:  2016-07-01
+	End Date:  2018-12-31
+
+Maintenance
+
+	
+          ongoing
+        
+
+
+Dataset Contact
+
+
+
+Methods
+
+
+
+	Method Step 
+
+		Description 
+
+
+
+Data Table
+
+	Entity Name:  CSM081
+	Entity Description:  Data set contains summaries (summer) of the number of individuals of each species of small mammal captured (relative abundance) on each transect.
+	Object Name:  CSM081.csv
+
+
+
+Data Format
+
+	Number of Header Lines:  1
+	Attribute Orientation:  column
+	Field Delimiter:  ,
+	Number of Records:  1144
+
+
+
+Attributes
+
+	Attribute Name:  DataCode
+	Attribute Label:  DataCode
+	Attribute Definition:  Dataset code
+	Storage Type:  string
+	Measurement Scale: 
+		Dataset code
+	Missing Value Code: 
+
+
+	Attribute Name:  Rectype
+	Attribute Label:  Rectype
+	Attribute Definition:  Record type
+	Storage Type:  string
+	Measurement Scale: 
+		Record type
+	Missing Value Code: 
+
+
+	Attribute Name:  RecYear
+	Attribute Label:  RecYear
+	Attribute Definition:  Year of sample
+	Storage Type:  
+	Measurement Scale: 
+		Units:		Year (YYYY)
+		Number Type:  real
+	Missing Value Code: 
+
+
+	Attribute Name:  Date
+	Attribute Label:  Date
+	Attribute Definition:  Date of sample
+	Storage Type:  date
+	Measurement Scale: 
+	Missing Value Code: 
+
+
+	Attribute Name:  Watershed
+	Attribute Label:  Watershed
+	Attribute Definition:  Watershed name. Watershed (1D=annual burn replicate D; 4B=4-year burn replicate B; 4F=4-year burn replicate F; 20B=20-year burn replicate B; SpB=annual spring seasonal burn replicate B; SuB=annual or biennial summer seasonal burn replicate B; R1A=reversal burn schedule from 20-year to annual burn replicate A; R20A=reversal burn from annual to 20-year burn replicate A. Reversal treatments were initiated in 2000).
+	Storage Type:  string
+	Measurement Scale: 
+		Watershed name. Watershed (1D=annual burn replicate D; 4B=4-year burn replicate B; 4F=4-year burn replicate F; 20B=20-year burn replicate B; SpB=annual spring seasonal burn replicate B; SuB=annual or biennial summer seasonal burn replicate B; R1A=reversal burn schedule from 20-year to annual burn replicate A; R20A=reversal burn from annual to 20-year burn replicate A. Reversal treatments were initiated in 2000).
+	Missing Value Code: 
+
+
+	Attribute Name:  Transect
+	Attribute Label:  Transect
+	Attribute Definition:  Transect line. N, S, E, W; total transect length is 285m.
+	Storage Type:  string
+	Measurement Scale: 
+		N= north
+		S= south
+		E= east
+		W= west
+	Missing Value Code: 
+
+
+	Attribute Name:  TrapStation
+	Attribute Label:  TrapStation
+	Attribute Definition:  Trap Station. numbered 1-20 per linear transect; each trap station is spaced 15m apart; two traps are set concurrently at each trap station; station 1 is always northernmost, station 20 is always southernmost for each transect.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Number Type:  real
+	Missing Value Code: .  (Missing or Not Measured)
+
+
+	Attribute Name:  Species
+	Attribute Label:  Species
+	Attribute Definition:  Species code. PMMA=Peromyscus maniculatus; PMLE=Peromyscus leucopus; REME=Reithrodontomys megalotis; REMO=Reithrodontomys montanus; NEFL=Neotoma floridana; MIOC=Microtus ochrogaster; MIPI=Microtus pinetorum; SIHI=Sigmodon hispidus; CHHI=Chaetodipus hispidus; BLHA=Blarina hylophaga; CRPA=Cryptotis parva; SYFL=Sylvalagus floridanus; DIVI=Didelphis virginiana; ZAHU=Zapus hudsonius; ICTR=Ictidomys tridecemlineatus
+	Storage Type:  string
+	Measurement Scale: 
+		Species code. PMMA=Peromyscus maniculatus; PMLE=Peromyscus leucopus; REME=Reithrodontomys megalotis; REMO=Reithrodontomys montanus; NEFL=Neotoma floridana; MIOC=Microtus ochrogaster; MIPI=Microtus pinetorum; SIHI=Sigmodon hispidus; CHHI=Chaetodipus hispidus; BLHA=Blarina hylophaga; CRPA=Cryptotis parva; SYFL=Sylvalagus floridanus; DIVI=Didelphis virginiana; ZAHU=Zapus hudsonius; ICTR=Ictidomys tridecemlineatus
+	Missing Value Code: 
+
+
+	Attribute Name:  SpecimenNo1
+	Attribute Label:  SpecimenNo1
+	Attribute Definition:  Specimen Number 1. 3-digit and 4-digit numbers correspond to ear tag numbers; NA=Not Applicable; generally assigned to escaped individuals.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Number Type:  real
+	Missing Value Code: .  (Missing or Not Measured)
+
+
+	Attribute Name:  SpecimenNo2
+	Attribute Label:  SpecimenNo2
+	Attribute Definition:  Specimen Number 2. 3-digit and 4-digit numbers correspond to ear tag numbers; used in the event of multiple ear tags, where the higher number is Specimen Number 2.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Number Type:  real
+	Missing Value Code: blank  (Missing or Not Measured)
+
+
+	Attribute Name:  VoucherNo
+	Attribute Label:  VoucherNo
+	Attribute Definition:  Voucher Number. 6-digit number prefixed with NK (eg. NK123456) corresponds to specimen accession number for Museum of Southwestern Biology (University of New Mexico) where voucher specimen materials are being deposited.
+	Storage Type:  string
+	Measurement Scale: 
+		Voucher Number. 6-digit number prefixed with NK (eg. NK123456) corresponds to specimen accession number for Museum of Southwestern Biology (University of New Mexico) where voucher specimen materials are being deposited.
+	Missing Value Code: 
+
+
+	Attribute Name:  RecaptureStatus
+	Attribute Label:  RecaptureStatus
+	Attribute Definition:  Recapture Status.
+	Storage Type:  string
+	Measurement Scale: 
+		Y= Yes (recapture of same year)
+		N= No (new individual)
+		A= Annual (recapture from a previous year)
+	Missing Value Code: 
+
+
+	Attribute Name:  Disposition
+	Attribute Label:  Disposition
+	Attribute Definition:  Disposition. each treatment watershed has one catch-and-release transect (1D-E, 20B-E, 4B-W, 4F-W, R1A-S, R20A-W, SpB-S, SuB-E) and one specimen removal transect (1D-W, 20B-W, 4B-E, 4F-E, R1A-N, R20A-E, SpB-N, SuB-W); generally all specimens from catch-and-release transects are released unless they are found dead in trap or are otherwise collected for specimen voucher purposes; all specimens from removal transects become vouchers.
+	Storage Type:  string
+	Measurement Scale: 
+		Disposition. each treatment watershed has one catch-and-release transect (1D-E, 20B-E, 4B-W, 4F-W, R1A-S, R20A-W, SpB-S, SuB-E) and one specimen removal transect (1D-W, 20B-W, 4B-E, 4F-E, R1A-N, R20A-E, SpB-N, SuB-W); generally all specimens from catch-and-release transects are released unless they are found dead in trap or are otherwise collected for specimen voucher purposes; all specimens from removal transects become vouchers.
+	Missing Value Code: 
+
+
+	Attribute Name:  TotalLength
+	Attribute Label:  TotalLength
+	Attribute Definition:  Total Length. measurement (mm) from tip of nose to tip of tail when specimen is laid flat on the back, not including tail tuft; brackets indicate inaccurate or incomplete measurement.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  millimeter
+		Precision:  0.1
+		Number Type:  real
+	Missing Value Code: blank  (Missing or Not Measured)
+
+
+	Attribute Name:  TailLength
+	Attribute Label:  TailLength
+	Attribute Definition:  Tail Length.measurement (mm) from base to tip of tail when tail is perpendicular to body laid on stomach, not including tail tuft; brackets indicate inaccurate or incomplete measurement.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  millimeter
+		Precision:  0.1
+		Number Type:  real
+	Missing Value Code: blank  (Missing or Not Measured)
+
+
+	Attribute Name:  HFLength
+	Attribute Label:  HFLength
+	Attribute Definition:  Hind Foot Length. measurement (mm) from heel to tip of longest toe nail on left hind foot.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  millimeter
+		Precision:  0.1
+		Number Type:  real
+	Missing Value Code: blank  (Missing or Not Measured)
+
+
+	Attribute Name:  EarLength
+	Attribute Label:  EarLength
+	Attribute Definition:  Ear Length. measurement (mm) from ear notch to furthest edge of pinna.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  millimeter
+		Precision:  0.1
+		Number Type:  real
+	Missing Value Code: .  (Missing or Not Measured)
+
+
+	Attribute Name:  Weight
+	Attribute Label:  Weight
+	Attribute Definition:  Weight. measurement (g) of whole body mass.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  gram
+		Precision:  0.1
+		Number Type:  real
+	Missing Value Code: .  (Missing or Not Measured)
+
+
+	Attribute Name:  Sex
+	Attribute Label:  Sex
+	Attribute Definition:  Sex. M=Male; F=Female. comments col (M?=putative male, F?=putative female).
+	Storage Type:  string
+	Measurement Scale: 
+		Sex. M=Male; F=Female. comments col (M?=putative male, F?=putative female).
+	Missing Value Code: 
+
+
+	Attribute Name:  Age
+	Attribute Label:  Age
+	Attribute Definition:  Age
+	Storage Type:  string
+	Measurement Scale: 
+		A= Adult
+		JUV= Juvenile
+		SA= Youth adult
+	Missing Value Code: 
+
+
+	Attribute Name:  ReprodCondition
+	Attribute Label:  ReprodCondition
+	Attribute Definition:  Reproductive Condition. S=Scrotal male; NS=Non-scrotal male; C=vagina closed; O=vagina perforated; S=nipples small; E=nipples enlarged; N=non-lactating; L=lactating
+	Storage Type:  string
+	Measurement Scale: 
+		Reproductive Condition. S=Scrotal male; NS=Non-scrotal male; C=vagina closed; O=vagina perforated; S=nipples small; E=nipples enlarged; N=non-lactating; L=lactating
+	Missing Value Code: 
+
+
+	Attribute Name:  Comments
+	Attribute Label:  Comments
+	Attribute Definition:  Relevant descriptive comments; OTB=old tail bob; NTB=new tail bob; other.
+	Storage Type:  string
+	Measurement Scale: 
+		Relevant descriptive comments; OTB=old tail bob; NTB=new tail bob; other.
+	Missing Value Code: 
+
+
+	Attribute Name:  DataCode
+	Attribute Label:  DataCode
+	Attribute Definition:  Dataset Code
+	Storage Type:  string
+	Measurement Scale: 
+		Dataset Code
+	Missing Value Code: 
+
+
+	Attribute Name:  RecType
+	Attribute Label:  RecType
+	Attribute Definition:  Record Type
+	Storage Type:  string
+	Measurement Scale: 
+		Record Type
+	Missing Value Code: 
+
+
+	Attribute Name:  ID
+	Attribute Label:  ID
+	Attribute Definition:  ID
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Number Type:  real
+	Missing Value Code: 
+
+
+	Attribute Name:  Watershed
+	Attribute Label:  Watershed
+	Attribute Definition:  Watershed name. Watershed name (1D=annual burn replicate D; 4B=4-year burn replicate B; 4F=4-year burn replicate F; 20B=20-year burn replicate B; SpB=annual spring seasonal burn replicate B; SuB=annual or biennial summer seasonal burn replicate B; R1A=reversal burn schedule from 20-year to annual burn replicate A; R20A=reversal burn from annual to 20-year burn replicate A. Reversal treatments were initiated in 2000).
+	Storage Type:  string
+	Measurement Scale: 
+		Watershed name. Watershed name (1D=annual burn replicate D; 4B=4-year burn replicate B; 4F=4-year burn replicate F; 20B=20-year burn replicate B; SpB=annual spring seasonal burn replicate B; SuB=annual or biennial summer seasonal burn replicate B; R1A=reversal burn schedule from 20-year to annual burn replicate A; R20A=reversal burn from annual to 20-year burn replicate A. Reversal treatments were initiated in 2000).
+	Missing Value Code: 
+
+
+	Attribute Name:  Transect
+	Attribute Label:  Transect
+	Attribute Definition:  Transect. N, S, E, W; total transect length is 285m.
+	Storage Type:  string
+	Measurement Scale: 
+		Transect. N, S, E, W; total transect length is 285m.
+	Missing Value Code: 
+
+
+	Attribute Name:  TrapStation
+	Attribute Label:  TrapStation
+	Attribute Definition:  Trap Station. numbered 1-20 per linear transect; each trap station is spaced 15m apart; two traps are set concurrently at each trap station; station 1 is always northernmost, station 20 is always southernmost for each transect.
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Number Type:  real
+	Missing Value Code: 
+
+
+	Attribute Name:  Latitude
+	Attribute Label:  Latitude
+	Attribute Definition:  Latitude. Latitude downloaded from GPS
+	Storage Type:  string
+	Measurement Scale: 
+		Latitude. Latitude downloaded from GPS
+	Missing Value Code: 
+
+
+	Attribute Name:  Longitude
+	Attribute Label:  Longitude
+	Attribute Definition:  Longitude. Longitude downloaded from GPS
+	Storage Type:  string
+	Measurement Scale: 
+		Longitude. Longitude downloaded from GPS
+	Missing Value Code: 
+
+
+	Attribute Name:  Elevation
+	Attribute Label:  Elevation
+	Attribute Definition:  Elevation. Elevation downloaded from GPS
+	Storage Type:  
+	Measurement Scale: 
+		Units:  meter
+		Number Type:  real
+	Missing Value Code: 
+
+
