@@ -16,7 +16,7 @@ library(readr)
 
 Now let's pull in the data
 ```{r}
-DF <- read.csv(here("Data", "CapDAP_data.csv"),stringsAsFactors = TRUE)
+DF <- read.csv(here("Data", "CapDAP_data.csv"))
 ```
 
 Before we begin any analysis, we need to check our data for possible errors/outliers.
@@ -24,10 +24,18 @@ Before we begin any analysis, we need to check our data for possible errors/outl
 
 ## We'd like to ask the following questions from these data:
 
-### 1. Is there a relationship between Watershed (and therefore burn policy) and species composition?
+### 1. Is there a relationship between Watershed (and therefore burn policy) and abundacne of species? number of species found?
 
 
 A. Watershed names
+
+First make Watershed a factor variable
+```{r}
+DF$Watershed<-as.factor(DF$Watershed)
+```
+
+
+then look at the levels
 ```{r}
 levels(DF$Watershed)
 ```
@@ -45,6 +53,13 @@ R still thinks there are 9 levels. Lets relevel them by making Watershed a facto
 DF$Watershed <-factor(DF$Watershed)
 levels(DF$Watershed)
 ```
+
+Copy this new dataframe and put it in data folder ***MAKE SURE THIS IS CORRECT FIRST (maybe go through and redo exploratory)
+
+```{r}
+write.csv(DF, here("Data","Processed Data","DF_WsSpC.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+```
+
 
 
 B. Let's check Watershed and Species
@@ -68,6 +83,8 @@ Let's run a summary on all the variables
 summary(DF)
 ```
 
+
+
 Both Watershed and Species are catagorical nominal variables.
 
 ***This was the test I wanted to ask Erika about so I am going to stop here with this one and move on to the next analysis.
@@ -83,6 +100,11 @@ summary(DF$Weight)
 ```
 ***there are too many points to see an outlier. Go back into Stats notes and remember how to use head() function to see however many lowest and highest values you would like.
 
+```{r}
+DF$Weight<-as.numeric(DF$Weight)
+```
+warning message?
+
 
 Let's view a histogram.
 ```{r}
@@ -96,35 +118,62 @@ ggplot(DF, aes(x = Weight))+
 I should plot the data. My x variable is categorical, y is continuous. A boxplot would be a good choice here.
 
 ```{r}
-ggplot(DF, aes(Watershed, Weight))+
-     geom_boxplot()+
-     geom_point(size = 2, alpha = 0.5, position = "jitter")
+DF$Species<-as.factor(DF$Species)
+levels(DF$Species)
 ```
 
-Oh boy. Okay, based on this plot I am pretty definite that I should narrow down to one species. Looking at this plot though, you can see different trends. In 20B there is a clump around the middle, in 1D and 4F there are clumps closer to the bottom, and R1A is spread pretty evenly with points at high middle and lower values.
+
+```{r}
+ggplot(DF, aes(Watershed, Weight))+
+     geom_boxplot()+
+     geom_point(size = 2, alpha = 0.5, position = "jitter")+
+        facet_wrap(~Species)
+```
+
+Oh boy. Okay, based on this plot I am pretty definite that I should narrow down to one species. Looking at this plot though, you can see different trends. In 20B there is a clump around the middle, in 1D and 4F there are clumps closer to the bottom, and R1A is spread pretty evenly with points at high middle and lower values. The difference though could be in different species that are found there not in the different weights of the same species. By choosing one species this would eliminate this error.
 
 
-This looks like a one-way ANOVA because there are more than 2 levels of my categorical variable and because my response variable is continuous.
+This looks like a two-way ANOVA because 
+there are more than 2 levels of my categorical variable and because my response variable is continuous.
+
+just get the adults
+
+```{r}
+adults<-DF%>%
+        filter(Age=="A")
+```
+
+
 
 Build the model
 ```{r}
-Wt_mod <- lm(Weight ~ Watershed, data = DF)
+Wt_mod <- lm(Weight ~ Watershed+Species, data = adults)
 ```
-***it ran the model successfully, but gives me a warning.
+
 
 Now we need to check the assumptions 
 
 ```{r}
 autoplot(Wt_mod, smooth.color = NA)
 ```
-I think this would look more reasonable if I chose one species, but as is I think it is okay.
+
+
+
+```{r}
+ggplot(adults, aes(Weight))+
+     geom_histogram()+
+        facet_wrap(~Species)
+```
+
+
+
 
 So now let's look at the results of our model and do some interpretation.
 
 ```{r}
 anova(Wt_mod)
 ```
-This gives me an error.
+
 
 Let's look at the summary
 
@@ -132,7 +181,6 @@ Let's look at the summary
 summary(Wt_mod)
 ```
 
-***This gives me an error too. I will have to come back and see what I can do.
 
 
 ### 3. Is there a relationship between Species and Year?
@@ -164,7 +212,7 @@ Both variables are continuous
 Make a scatterplot
 #### Plot relationship
 ```{r}
-ggplot(DF, aes(x = RecYear,  y = Species, color = Watershed))+
+ggplot(DF, aes(x = RecYear,  y = Species))+
      geom_point()+
      theme_bw()
 ```

@@ -1,0 +1,121 @@
+---
+title: "CapDAP_analysis"
+author: "Marliese"
+date: "11/14/2022"
+output: html_document
+---
+
+###Introduction:
+
+
+###Analysis:
+
+First lets set things up
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+library(ggfortify)
+library(readr)
+```
+
+
+##Analysis 1:
+
+1. pull in data
+
+```{r}
+WsSpC <- read.csv(here("Data", "Processed Data", "DF_WsSpC.csv"))
+```
+
+2. plot expected relationships
+
+```{r}
+ggplot(WsSpC, aes(x = Watershed, y=Species))+
+     geom_point()+
+  xlab("Watershed")+
+  ylab("Species")
+```
+
+
+3. guess expected relationships (hypothesis)
+
+I think there will not be a significant difference in Species composition between Watersheds.
+
+4. decide on statistical model and test and explain why
+
+This will be a chi squared test because both Watershed and Species are catagorical nominal variables.
+
+5. check model assumptions
+
+6. run stat model
+
+7. interpret model results (were expected relationships supported?)
+
+8. replot data to show key relationships
+
+
+##Analysis 2:
+
+1. pull in data
+
+2. plot expected relationships
+
+3. guess expected relationships (hypothesis)
+
+4. decide on statistical model and test and explain why
+
+5. check model assumptions
+
+6. run stat model
+
+7. interpret model results (were expected relationships supported?)
+
+8. replot data to show key relationships
+
+##Analysis 3:
+
+1. pull in data
+
+2. plot expected relationships
+
+3. guess expected relationships (hypothesis)
+
+4. decide on statistical model and test and explain why
+
+5. check model assumptions
+
+6. run stat model
+
+7. interpret model results (were expected relationships supported?)
+
+8. replot data to show key relationships
+
+##Analysis 4:
+
+1. pull in data
+
+2. plot expected relationships
+
+3. guess expected relationships (hypothesis)
+
+4. decide on statistical model and test and explain why
+
+5. check model assumptions
+
+6. run stat model
+
+7. interpret model results (were expected relationships supported?)
+
+8. replot data to show key relationships
+
+
+
+
+###Biological Summary:
+
+
+###Challenges:
+
+
+
