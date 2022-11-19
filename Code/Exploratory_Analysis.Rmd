@@ -1,0 +1,354 @@
+---
+title: "Exploratory_Stuff"
+author: "Marliese"
+date: "11/17/2022"
+output: html_document
+---
+
+First lets set things up
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+library(ggfortify)
+library(readr)
+```
+
+Now let's pull in the data
+```{r}
+DF <- read.csv(here("Data", "CapDAP_data.csv"))
+```
+
+
+###Part1: number of species per watershed (species richness)
+
+lets make the first dataframe for analysis 1
+
+
+
+1. Make Watershed and species a factor variable
+```{r}
+DF$Watershed<-as.factor(DF$Watershed)
+DF$Species<-as.factor(DF$Species)
+```
+
+
+2. look at the levels
+```{r}
+levels(DF$Watershed)
+levels(DF$Species)
+```
+
+Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
+
+3. fix levels of watershed
+```{r}
+fix <- which(DF$Watershed == "SPB")
+DF$Watershed[fix]<-"SpB"
+```
+
+R still thinks there are 9 levels. Lets relevel them by making Watershed a factor variable again.
+
+4. relevel
+```{r}
+DF$Watershed <-factor(DF$Watershed)
+levels(DF$Watershed)
+```
+
+5. plot expected relationship
+```{r}
+ggplot(DF, aes(x = Watershed,  y = Species))+
+     geom_point()+
+     theme_bw()
+```
+As this plot shows, not all species are found in each watershed.
+
+6. make a new dataframe to show just number of species found in each watershed
+```{r}
+newdata<-DF%>%
+group_by(Watershed)%>%
+  summarise(
+length(unique(Species)))
+```
+
+
+7. Copy this new dataframe and put it in data folder ***MAKE SURE THIS IS CORRECT before running
+```{r}
+write.csv(newdata, here("Data","Processed Data","Ws_Num_Sp.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+```
+
+
+
+###Part2: 2-way anova avg weight of spp by watershed
+
+lets make the first dataframe for analysis 2. First start over and clear environment and re-pull in the data.
+
+1. look at variables and see if need to change them at all
+```{r}
+
+DF$Watershed<-as.factor(DF$Watershed)
+DF$Weight<-as.numeric(DF$Weight)
+```
+
+
+2. look at the levels
+```{r}
+levels(DF$Watershed)
+levels(DF$Weight) #not actually something you can look at but I put it in just to be thorough
+```
+
+Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
+
+3. fix levels of watershed
+```{r}
+fix <- which(DF$Watershed == "SPB")
+DF$Watershed[fix]<-"SpB"
+```
+
+R still thinks there are 9 levels. Lets relevel them by making Watershed a factor variable again.
+
+4. relevel
+```{r}
+DF$Watershed <-factor(DF$Watershed)
+levels(DF$Watershed)
+```
+
+5. plot expected relationship
+```{r}
+ggplot(DF, aes(Watershed, Weight))+
+     geom_boxplot()+
+     geom_point(size = 2, alpha = 0.5, position = "jitter")+
+        facet_wrap(~Species)
+```
+
+As this plot shows, there are a lot of other things going on. To get rid of some of this noise I am going to subset to look at individuals that are Adults, and only look at a few species.
+
+
+6. make age and species factor variables bc I will be using them
+```{r}
+DF$Species<-as.factor(DF$Species)
+DF$Age<-as.factor(DF$Age)
+```
+
+7. look at the levels of Age (I know the levels of Species are good bc I looked at them in part 1)
+```{r}
+levels(DF$Age)
+```
+
+Okay, so I looked at the metadata and based on that I am going to fix some things
+
+8. fix levels
+```{r}
+no <- which(DF$Age == "JUV"| DF$Age == "J")
+DF$Age[no]<-"Juv"
+
+nah <- which(DF$Age == "?")
+DF$Age[nah]<-""
+```
+
+9. relevel
+```{r}
+DF$Age <-factor(DF$Age)
+levels(DF$Age)
+```
+
+That looks better. There is still a weird "SJ" (which I am assuming to mean sub-juvenile but the metadata doesn't actually clarify). If I was going to look at Weight in relation to age, which would be interesting, I would omit "SJ" and "", however because I am just going to be looking at Adults I am going to leave it.
+
+
+10. make a new dataframe to show just number of species found in each watershed
+
+I am going to do it in levels
+
+10.a) subset just adults
+```{r}
+adults<-DF%>%
+        filter(Age=="A")
+```
+
+look at the spread now
+```{r}
+ggplot(adults, aes(Watershed, Weight))+
+     geom_boxplot()+
+     geom_point(size = 2, alpha = 0.5, position = "jitter")+
+        facet_wrap(~Species)
+```
+Looks good but we can make it better.
+
+
+10.b) subset to specific species
+```{r}
+OldSpp<-adults%>%
+  filter(Species=="SIHI"|Species=="MIOC")
+```
+
+look at spread
+```{r}
+ggplot(OldSpp, aes(Watershed, Weight))+
+     geom_boxplot()+
+     geom_point(size = 2, alpha = 0.5, position = "jitter")+
+        facet_wrap(~Species)
+```
+Okay, this looks better. I am going to keep these two species. But first I need to separate them out into different dataframes.
+
+```{r}
+OldSIHI<-adults%>%
+  filter(Species=="SIHI")
+
+OldMIOC<-adults%>%
+  filter(Species=="MIOC")
+```
+
+10.c) omit na values so I can proceed
+```{r}
+OldSIHI <- OldSIHI[!(is.na(OldSIHI$Weight)), ]
+OldMIOC <- OldMIOC[!(is.na(OldMIOC$Weight)), ]
+```
+
+
+10.d) make new dataframes
+```{r}
+SIHI_Ws_AvgW<-OldSIHI%>%
+  group_by(Watershed)%>%
+  summarise(
+    avg_Weight=mean(Weight))
+```
+
+
+```{r}
+MIOC_Ws_AvgW<-OldMIOC%>%
+  group_by(Watershed)%>%
+  summarise(
+    avg_Weight=mean(Weight))
+```
+
+
+11. Copy this new dataframe and put it in data folder ***MAKE SURE THIS IS CORRECT before running
+```{r}
+write.csv(SIHI_Ws_AvgW, here("Data","Processed Data","SIHI_Ws_AvgW.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+
+write.csv(MIOC_Ws_AvgW, here("Data","Processed Data","MIOC_Ws_AvgW.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+```
+
+
+
+
+###Part 3: species composition and watershed
+
+lets make the dataframe for analysis 3. First start over and clear environment and re-pull in the data.
+
+1. Make Watershed and species a factor variable
+```{r}
+DF$Watershed<-as.factor(DF$Watershed)
+DF$Species<-as.factor(DF$Species)
+DF$Transect<-as.factor(DF$Transect)
+```
+
+
+2. look at the levels
+```{r}
+levels(DF$Watershed)
+levels(DF$Species)
+```
+
+Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
+
+3. fix levels of watershed
+```{r}
+fix <- which(DF$Watershed == "SPB")
+DF$Watershed[fix]<-"SpB"
+```
+
+R still thinks there are 9 levels. Lets relevel them by making Watershed a factor variable again.
+
+4. relevel
+```{r}
+DF$Watershed <-factor(DF$Watershed)
+levels(DF$Watershed)
+```
+
+5. plot expected relationship
+```{r}
+ggplot(DF, aes(x = Watershed,  y = Species))+
+     geom_point()+
+     theme_bw()
+```
+***note this is not the expected relationship. but move on now
+
+
+
+6. subset data so only have dataframe w/ date, watershed, transect, and species. Look at that dataframa and then create another dataframe, and add a column w the number of individuals per species per transect in each watershed.
+```{r}
+DWTS<-DF%>%
+  subset(select=c(Date,Watershed,Transect,Species))
+
+try<-DF%>%
+  subset(select=c(Date,Watershed,Species))%>%
+  group_by(Watershed,Species)%>%
+  summarise(
+    length(Species))
+```
+note: did this and included Transect in the subsets and in the group_by for df 'try', but after a lot of work and troubleshooting, I went back and took it out because then the Shannon idex was giving me the diversity for each transect not each watershed.
+
+
+7. make length(Species) a numeric variable bc vegan gives a lot of errors if things aren't
+```{r}
+try$`length(Species)`<-as.numeric(try$`length(Species)`)
+```
+
+
+
+8. try to pivot_wider just the species column so each species is a column header and the value in the cells are the number of inidivids
+```{r}
+WTS_wide<-try%>%
+  pivot_wider(names_from = "Species", values_from = "length(Species)") 
+```
+wait that like actually did what I wanted it to!! yay!
+
+
+9. use vegan package to get Shannon index and Simpson index
+
+9.a) first load vegan
+```{r}
+library(vegan)
+library(ggvegan)
+```
+note: go to this page to learn abt vegan https://cran.r-project.org/web/packages/vegan/vignettes/diversity-vegan.pdf 
+or this one
+https://rpubs.com/an-bui/vegan-cheat-sheet
+
+
+9.b) lets try some things to get the shannon diversity index
+
+okay make NA = 0 in WTS_wide
+```{r}
+WTS_wide[is.na(WTS_wide)] = 0
+```
+
+
+run shannon diversity index on that
+```{r}
+Sh_div<-diversity(WTS_wide[-1], index="shannon")
+```
+note: when I run the following code it gives me a different number than the one it gave for the code above this note.
+```{r}
+#diversity(WTS_wide$MIOC, index = "shannon",
+         # MARGIN = 1, base = exp(1))
+```
+
+
+
+10. add that column to dataframe!!!
+```{r}
+WTS_wide$Sh_div <-Sh_div
+```
+yes yes yes!
+
+
+11. Copy this new dataframe and put it in processed data folder ***MAKE SURE THIS IS CORRECT before running
+```{r}
+write.csv(WTS_wide, here("Data","Processed Data","Ws_Sp_Shannon.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+```
+
+
+
+

@@ -25,22 +25,22 @@ library(readr)
 1. pull in data
 
 ```{r}
-WsSpC <- read.csv(here("Data", "Processed Data", "DF_WsSpC.csv"))
+WsNumSp <- read.csv(here("Data", "Processed Data", "Ws_Num_Sp.csv"))
 ```
 
 2. plot expected relationships
 
 ```{r}
-ggplot(WsSpC, aes(x = Watershed, y=Species))+
+ggplot(WsNumSp, aes(x = Watershed, y=length.unique.Species..))+
      geom_point()+
   xlab("Watershed")+
-  ylab("Species")
+  ylab("Number of Species Present")
 ```
 
 
 3. guess expected relationships (hypothesis)
 
-I think there will not be a significant difference in Species composition between Watersheds.
+I think there will not be a significant difference in the number of species
 
 4. decide on statistical model and test and explain why
 

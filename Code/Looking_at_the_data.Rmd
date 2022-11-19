@@ -84,6 +84,13 @@ summary(DF)
 ```
 
 
+```{r}
+ggplot(DF, aes(x = Watershed,  y = Species))+
+     geom_point()+
+     theme_bw()
+```
+
+
 
 Both Watershed and Species are catagorical nominal variables.
 
