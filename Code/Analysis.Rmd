@@ -5,10 +5,16 @@ date: "11/14/2022"
 output: html_document
 ---
 
-###Introduction:
+##Introduction:
+
+what is the biological motivation behind your research? What is the scientific justification (i.e., cite some papers) for your hypotheses and expected outcomes?
+
+For hypothesis 1)	My initial thought was that there would be a significant difference found between the number of species  between the different watersheds because they have different burn policies, therefore the habitat in these watersheds will be different and support different species. After conducting some preliminary research however, I do not think there will be a significant difference. The understory wasn’t remarkably changed by the fires in this study, which altered my hypothesis (https://fireecology.springeropen.com/articles/10.1186/s42408-019-0038-8). 
+
+For hypothesis 2)	I think there will be a significant difference in avg animal size in different watersheds. Fires can expose food sources that were hidden or not available before, and they can support certain plant species (https://content.ces.ncsu.edu/using-fire-to-improve-wildlife-habitat). 
 
 
-###Analysis:
+##Analysis:
 
 First lets set things up
 ```{r}
@@ -20,18 +26,18 @@ library(readr)
 ```
 
 
-##Analysis 1:
+###Analysis 1:
 
 1. pull in data
 
 ```{r}
-WsNumSp <- read.csv(here("Data", "Processed Data", "Ws_Num_Sp.csv"))
+A1 <- read.csv(here("Data", "Processed Data", "Ws_Num_Sp.csv"))
 ```
 
 2. plot expected relationships
 
 ```{r}
-ggplot(WsNumSp, aes(x = Watershed, y=length.unique.Species..))+
+ggplot(A1, aes(x = Watershed, y=length.unique.Species..))+
      geom_point()+
   xlab("Watershed")+
   ylab("Number of Species Present")
@@ -40,82 +46,221 @@ ggplot(WsNumSp, aes(x = Watershed, y=length.unique.Species..))+
 
 3. guess expected relationships (hypothesis)
 
-I think there will not be a significant difference in the number of species
+I think there will not be a significant difference in the number of species found in different watersheds.
+
+Null hypothesis (Ho): The number of species found in each watershed is equal (no significant difference).
+Alternate hypothesis (Ha): The number of species found in each watershed is not equal (significant difference).
+
 
 4. decide on statistical model and test and explain why
 
-This will be a chi squared test because both Watershed and Species are catagorical nominal variables.
+explanatory = Watershed = categorical nominal
+response = length.unique.Species.. = discrete quantitative
 
-5. check model assumptions
+This will be a chi squared test because Watershed (the expanatory or predictor variable) is a categorical nominal variable and length.unique.Species.. (the response variable) is a quantitative discrete variable. (Based on the chart we were provided with.)
 
-6. run stat model
+5. create model
 
-7. interpret model results (were expected relationships supported?)
+5.a) make a matrix
+```{r}
+A1.mat<-xtabs(length.unique.Species..~Watershed,data=A1)
+A1.mat
+```
+5.b) make the model
+```{r}
+A1.chi<-chisq.test(A1.mat)
+```
 
-8. replot data to show key relationships
+
+6. check model assumptions
+
+```{r}
+autoplot(A1.chi)
+```
+When I looked online for other ways to check Chi-squared assumptions, I found that the first assumption is both variables are categorical. This contradicts what we were taught in this class, and so I decided to just do what we were taught, and leave the assumptions as is. I think a more appropriate test with these varibles would be an anova, but I will continue with the chi sqaured bc it is what we were taught.
 
 
-##Analysis 2:
+
+7. run stat model
+
+```{r}
+names(A1.chi)
+A1.chi$expected
+A1.chi
+```
+
+8. interpret model results (were expected relationships supported?)
+
+Null hypothesis (Ho): The number of species found in each watershed is equal.
+Alternate hypothesis (Ha): The number of species found in each watershed is not equal.
+
+p-value=0.9665
+0.9665>0.05 fail to reject the null
+
+There is not a significant difference in the number of species found in each watershed based on a p-value of 0.9665.
+
+
+
+9. replot data to show key relationships
+
+I don't know what plot to use to show this, especially because there wasn't a significant difference found.
+
+
+
+###Analysis 2:
 
 1. pull in data
 
+```{r}
+A2 <- read.csv(here("Data", "Processed Data", "SIHI_Ws_AvgW.csv"))
+```
+
+
+1.b) make Watershed a factor variable
+```{r}
+A2$Watershed<-as.factor(A2$Watershed)
+```
+
+
 2. plot expected relationships
+
+```{r}
+ggplot(A2, aes(x = Watershed, y=avg_Weight))+
+     geom_point()+
+  xlab("Watershed")+
+  ylab("Avgerage Weight")
+```
+
 
 3. guess expected relationships (hypothesis)
 
+I think there will not be a significant difference in the average weight of animals (SIHI and MIOC) found in different watersheds.
+
+Null hypothesis (Ho): The average weight of these species found in each watershed is equal (no significant difference).
+Alternate hypothesis (Ha): The average weight of these species found in each watershed is not equal (significant difference).
+
+
 4. decide on statistical model and test and explain why
 
-5. check model assumptions
+As this data is currently, this is a one-way anova. This is the correct test because the response variable (or y) is average weight which is a quantitative continuous variable, and the predictor/explanatory (or x) is Watershed which is categorical. I am asking about difference in group means, which makes this an anova. 
+If I wanted this to be a two-way anova, I would have to add another categorical variable (column) to the dataframe that could also impact weight, and could be influenced by or influence watershed.
 
-6. run stat model
 
-7. interpret model results (were expected relationships supported?)
 
-8. replot data to show key relationships
+5. create model
 
-##Analysis 3:
+```{r}
+modW<-lm(avg_Weight~Watershed,data=A2)
+```
+
+6. check model assumptions
+
+```{r}
+autoplot(modW)
+```
+I have researched this at length, and have yet to find a solution. I will continue researching tomorrow.
+
+
+7. run stat model
+
+```{r}
+aov(modW)
+anova(modW)
+summary(modW)
+```
+
+I get a lot of NaN values, which I have tried to fix using a variety of methods. None yet have been successful but I will keep trying.
+
+7.b) the closest I think I have gotten is:
+```{r}
+modW_new <- modW[!is.nan(modW)]
+```
+7.c) the error I got from trying to fix, I tried to fix using the following code
+```{r}
+A2$avg_Weight <- unlist(A2$avg_Weight)
+```
+
+
+8. interpret model results (were expected relationships supported?)
+
+Because of the errors I couldn't resolve, I am unable to fully interpret the model results. Based on the p-values, I would be able to tell if there was a significant difference in average weights between watersheds. If the p-value is less than 0.05, I reject the null hypothesis and can say there is a significant difference. If the p-value is greater than 0.05, I fail to reject the null hypothesis.
+
+9. replot data to show key relationships
+
+Cannot do this until resolve errors.
+
+###Analysis 3:
 
 1. pull in data
 
-2. plot expected relationships
+```{r}
+DivShan <- read.csv(here("Data", "Processed Data", "Ws_Sp_Shannon.csv"))
+```
 
-3. guess expected relationships (hypothesis)
 
-4. decide on statistical model and test and explain why
-
-5. check model assumptions
-
-6. run stat model
-
-7. interpret model results (were expected relationships supported?)
-
-8. replot data to show key relationships
-
-##Analysis 4:
-
-1. pull in data
 
 2. plot expected relationships
 
+```{r}
+ggplot(DivShan, aes(x = Watershed, y=Sh_div))+
+     geom_point()+
+  xlab("Watershed")+
+  ylab("Shannon Diversity Index")
+```
+
+
 3. guess expected relationships (hypothesis)
+
+
+I expect there will be a significant difference between the Shannon diversity indexes in different watersheds.
+
+Null hypothesis (Ho): The Shannon diversity indexes calculated for each watershed is equal (no significant difference).
+Alternate hypothesis (Ha): The Shannon diversity indexes calculated for each watershed is not equal (significant difference).
+
 
 4. decide on statistical model and test and explain why
 
-5. check model assumptions
+This test is an anova using glm. This is the correct test because the response variable (or y) is the Shannon diversity index which is a quantitative continuous variable, and the predictor/explanatory (or x) is Watershed which is categorical. I am using glm() because this data doesn't fit the linear model (lm()) distribution requirements.
 
-6. run stat model
+5. create model
 
-7. interpret model results (were expected relationships supported?)
+```{r}
+modDiv<-glm(Sh_div~Watershed,data=DivShan)
+```
 
-8. replot data to show key relationships
+6. check model assumptions
+
+```{r}
+autoplot(modDiv)
+```
+I am getting an error when I run this. The error is telling me that my y is empty or only has NAs, which I know is not true by looking at my dataframe and my model. I looked up this error and worked on it for a long time, but have been ultimately unsuccessful in resolving it so far.
 
 
+7. run stat model
+
+```{r}
+aov(modDiv)
+summary(modDiv)
+```
+
+I get a lot of NaN values, which I have tried to fix using a variety of methods. None yet have been successful but I will keep trying.
 
 
-###Biological Summary:
+8. interpret model results (were expected relationships supported?)
+
+Because of the errors I couldn't resolve, I am unable to fully interpret the model results. Based on the p-values, I would be able to tell if there was a significant difference in average weights between watersheds. If the p-value is less than 0.05, I reject the null hypothesis and can say there is a significant difference. If the p-value is greater than 0.05, I fail to reject the null hypothesis.
+
+9. replot data to show key relationships
+
+Cannot do this until I resolve errors.
 
 
-###Challenges:
+##Biological Summary:
+
+circle back to your introductory material and present a concise summary of what you found
 
 
+##Challenges:
+
+each of you have been taking a different approach in your Cap DAP; what did you have to figure out/learn/explore that was unique to your situation and that reflects new knowledge you gained that was not covered as a topic in lecture?  
 
