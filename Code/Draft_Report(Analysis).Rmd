@@ -262,5 +262,16 @@ circle back to your introductory material and present a concise summary of what 
 
 ##Challenges:
 
+The error messages have been a struggle in the analysis section.
+
+Working on VPN is difficult as well because it kicks me off a lot.
+
+Learning how to make the data frame for analysis 3 and all the work and trial and error that went into that.
+-Shannon diversity index and vegan package
+
+glm things
+
+
+
 each of you have been taking a different approach in your Cap DAP; what did you have to figure out/learn/explore that was unique to your situation and that reflects new knowledge you gained that was not covered as a topic in lecture?  
 
