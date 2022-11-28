@@ -18,7 +18,7 @@ Now let's pull in the data
 ```{r}
 DF <- read.csv(here("Data", "CapDAP_data.csv"))
 ```
-
+Nice big dataset!
 
 ###Part1: number of species per watershed (species richness)
 
@@ -41,6 +41,8 @@ levels(DF$Species)
 
 Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
 
+Well done! And this is why metadata are so important!
+
 3. fix levels of watershed
 ```{r}
 fix <- which(DF$Watershed == "SPB")
@@ -54,6 +56,7 @@ R still thinks there are 9 levels. Lets relevel them by making Watershed a facto
 DF$Watershed <-factor(DF$Watershed)
 levels(DF$Watershed)
 ```
+Before you plot expected relationships, how about a histogram for each of these two variables to see how they look in terms of distribution. For example, you would get a sense that for some of the species, there are very few individuals caught.
 
 5. plot expected relationship
 ```{r}
@@ -63,11 +66,22 @@ ggplot(DF, aes(x = Watershed,  y = Species))+
 ```
 As this plot shows, not all species are found in each watershed.
 
+This is an interesting plot for exploratory data analysis. Normally we don't use a scatterplot with two categorical variables.
+
 6. make a new dataframe to show just number of species found in each watershed
 ```{r}
 newdata<-DF%>%
 group_by(Watershed)%>%
   summarise(
+length(unique(Species)))
+```
+If you tweak this code just a bit you'll get a more meaningful variable name in newdata. See this example:
+
+```{r}
+newdata<-DF%>%
+group_by(Watershed)%>%
+  summarise(
+    num_species =
 length(unique(Species)))
 ```
 
@@ -76,12 +90,22 @@ length(unique(Species)))
 ```{r}
 write.csv(newdata, here("Data","Processed Data","Ws_Num_Sp.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
 ```
+Well done!
 
+But you didn't really look at the species variable for errors, just the watershed variable.Also, as we discussed, I think you should use the package vegan to compare not the number of species per watershed, but species diversity, which takes into account both presence and abundance of species.
+
+To do so, you will need a data frame that has the following columns:
+
+Watershed
+Transect (whatever the replicate is per watershed)
+and then a column for all of the species. The cells for the species columns will be the number of that species detected in the specific transect of each watershed.  See if you can figure out how to create this dataframe from what  you already have and then we can look at how to get the diversity indices from vegan.
 
 
 ###Part2: 2-way anova avg weight of spp by watershed
 
 lets make the first dataframe for analysis 2. First start over and clear environment and re-pull in the data.
+
+You might want to just copy that code and place it here.
 
 1. look at variables and see if need to change them at all
 ```{r}
@@ -89,6 +113,7 @@ lets make the first dataframe for analysis 2. First start over and clear environ
 DF$Watershed<-as.factor(DF$Watershed)
 DF$Weight<-as.numeric(DF$Weight)
 ```
+Do you want to address what the warning means?
 
 
 2. look at the levels
@@ -96,6 +121,7 @@ DF$Weight<-as.numeric(DF$Weight)
 levels(DF$Watershed)
 levels(DF$Weight) #not actually something you can look at but I put it in just to be thorough
 ```
+Ok, but what can you look at for weight?
 
 Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
 
@@ -112,6 +138,9 @@ R still thinks there are 9 levels. Lets relevel them by making Watershed a facto
 DF$Watershed <-factor(DF$Watershed)
 levels(DF$Watershed)
 ```
+Now it is time to look at the weight variable and get a sense of it. What is the mean? min? max? by species perhaps?
+
+This question is a little non-sensical because you are not separating by species. If you look at the plot you did at line 62 you would see that three species, SIHI, PEMA, and MIOC occur at all of the site. It might make more sense to isolate your data frame to just those species, and then do a 2-way anova comparing weights between species and watersheds of just those species.
 
 5. plot expected relationship
 ```{r}
@@ -123,6 +152,7 @@ ggplot(DF, aes(Watershed, Weight))+
 
 As this plot shows, there are a lot of other things going on. To get rid of some of this noise I am going to subset to look at individuals that are Adults, and only look at a few species.
 
+Yay! Now you can ignore most of the comments I made above this plot.
 
 6. make age and species factor variables bc I will be using them
 ```{r}
@@ -145,6 +175,8 @@ DF$Age[no]<-"Juv"
 nah <- which(DF$Age == "?")
 DF$Age[nah]<-""
 ```
+Why did you got with "" instead of `NA` for Age == ?
+
 
 9. relevel
 ```{r}
@@ -190,6 +222,8 @@ ggplot(OldSpp, aes(Watershed, Weight))+
 ```
 Okay, this looks better. I am going to keep these two species. But first I need to separate them out into different dataframes.
 
+Not if you want a 2-way ANOVA comparing weights between species and watersheds.
+
 ```{r}
 OldSIHI<-adults%>%
   filter(Species=="SIHI")
@@ -221,6 +255,8 @@ MIOC_Ws_AvgW<-OldMIOC%>%
     avg_Weight=mean(Weight))
 ```
 
+These are ok for plotting but not for analysis because you lost the replication. ANOVA only works with replicates for each treatment level.
+
 
 11. Copy this new dataframe and put it in data folder ***MAKE SURE THIS IS CORRECT before running
 ```{r}
@@ -229,7 +265,7 @@ write.csv(SIHI_Ws_AvgW, here("Data","Processed Data","SIHI_Ws_AvgW.csv"), row.na
 write.csv(MIOC_Ws_AvgW, here("Data","Processed Data","MIOC_Ws_AvgW.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
 ```
 
-
+I like that you have the processed folder.
 
 
 ###Part 3: species composition and watershed
@@ -251,6 +287,8 @@ levels(DF$Species)
 ```
 
 Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
+
+You are making a lot of work for yourself by having to fix watershed over and over again. Why not just fix it once?
 
 3. fix levels of watershed
 ```{r}
@@ -274,7 +312,7 @@ ggplot(DF, aes(x = Watershed,  y = Species))+
 ```
 ***note this is not the expected relationship. but move on now
 
-
+You already plotted this. Why again here?
 
 6. subset data so only have dataframe w/ date, watershed, transect, and species. Look at that dataframa and then create another dataframe, and add a column w the number of individuals per species per transect in each watershed.
 ```{r}
@@ -286,8 +324,18 @@ try<-DF%>%
   group_by(Watershed,Species)%>%
   summarise(
     length(Species))
+
+#you can modify this code for try just slightly to get a better column name in try, as follows:
+try<-DF%>%
+  subset(select=c(Date,Watershed,Species))%>%
+  group_by(Watershed,Species)%>%
+  summarise(num_species=
+    length(Species))
+
 ```
 note: did this and included Transect in the subsets and in the group_by for df 'try', but after a lot of work and troubleshooting, I went back and took it out because then the Shannon idex was giving me the diversity for each transect not each watershed.
+
+You actually want it for each transect if you are going to do an ANOVA - you need replicate values of shannon or simpson
 
 
 7. make length(Species) a numeric variable bc vegan gives a lot of errors if things aren't
@@ -330,6 +378,9 @@ run shannon diversity index on that
 Sh_div<-diversity(WTS_wide[-1], index="shannon")
 ```
 note: when I run the following code it gives me a different number than the one it gave for the code above this note.
+
+Yes - you can tweak in different ways. Go with what you have on line 378. But if you're going to save these data for an ANOVA, you need to add the transect level stuff back in.
+
 ```{r}
 #diversity(WTS_wide$MIOC, index = "shannon",
          # MARGIN = 1, base = exp(1))
@@ -348,7 +399,11 @@ yes yes yes!
 ```{r}
 write.csv(WTS_wide, here("Data","Processed Data","Ws_Sp_Shannon.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
 ```
+You did some great work on this! A couple of things to note:
 
+I am fine with you doing analysis 1, which I think will be a chi-square testing the count of species between watersheds, right? Then doing the more sophisticated analysis 3 on Shannon index.
+
+You need to do a bit more "exploring" in some of the exploratory data analysis, as noted in the code.
 
 
 
