@@ -1,4 +1,4 @@
-"Watershed","length(unique(Species))"
+"Watershed","num_species"
 "1D",5
 "20B",6
 "4B",8

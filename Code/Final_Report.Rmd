@@ -9,11 +9,15 @@ output: html_document
 
 what is the biological motivation behind your research? What is the scientific justification (i.e., cite some papers) for your hypotheses and expected outcomes?
 
-For hypothesis 1)	My initial thought was that there would be a significant difference found between the number of species  between the different watersheds because they have different burn policies, therefore the habitat in these watersheds will be different and support different species. After conducting some preliminary research however, I do not think there will be a significant difference. The understory wasn’t remarkably changed by the fires in this study, which altered my hypothesis (https://fireecology.springeropen.com/articles/10.1186/s42408-019-0038-8). 
+My overall biological motivation for this research was driven by an interest in small mammals and a desire to learn about habitat factors that could impact populations of these mammals. I also think looking at watershed as an indicator for burn policies and how they could impact habitat and therefore the species that live in those areas is interesting.
 
-Learn how to make a proper link using markdown formatting to link your citations. See markdown reference guides for help.
 
-For hypothesis 2)	I think there will be a significant difference in avg animal size in different watersheds. Fires can expose food sources that were hidden or not available before, and they can support certain plant species (https://content.ces.ncsu.edu/using-fire-to-improve-wildlife-habitat). 
+For hypothesis 1) My initial thought was that there would be a significant difference found between the number of species  between the different watersheds because they have different burn policies, therefore the habitat in these watersheds will be different and support different species. After conducting some preliminary research however, I do not think there will be a significant difference. The understory wasn’t remarkably changed by the fires in this study, which altered my hypothesis [(Strand, E.K., Satterberg, K.L., Hudak, A.T. et al. Does burn severity affect plant community diversity and composition in mixed conifer forests of the United States Intermountain West one decade post fire?. fire ecol 15, 25 (2019). https://doi.org/10.1186/s42408-019-0038-8)](https://fireecology.springeropen.com/articles/10.1186/s42408-019-0038-8).
+
+
+For hypothesis 2)	I think there will be a significant difference in avg animal weight in different watersheds. Fires can expose food sources that were hidden or not available before, and they can support certain plant species [(Fawcett, Moorman, Sharpe. Using Fire to Improve Wildlife Habitat. NC State Extension Publications (April 7 2021))](https://content.ces.ncsu.edu/using-fire-to-improve-wildlife-habitat). 
+
+For hypothesis 3) I think there will be a small significant difference in animal diversity in different watersheds because, as I said before, fires can expose different food sources and support the growth of different plants [(Fawcett, Moorman, Sharpe. Using Fire to Improve Wildlife Habitat. NC State Extension Publications (April 7 2021))](https://content.ces.ncsu.edu/using-fire-to-improve-wildlife-habitat). With that being said though, different fire treatments can help maintain growth and production of various plants differently. These different ways may vary in their effect on biodiversity, however while they do have differing effects, they are all positive [(Hulbert, Lloyd C. "Fire effects on tallgrass prairie." Proceedings of the Ninth North American Prairie Conference. GK Clambey and RH Pemble [eds.], Fargo, North Dakota. 1986.)](https://images.library.wisc.edu/EcoNatRes/EFacs/NAPC/NAPC09/reference/econatres.napc09.lhulbert.pdf). This could mean that the difference may not be as significant as I originally thought.
 
 
 ##Analysis:
@@ -100,13 +104,12 @@ There is not a significant difference in the number of species found in each wat
 9. replot data to show key relationships
 
 ```{r}
-#ggplot(A1, aes(x = Watershed, y=num_species))+
-#     geom_bar(color=blues9,fill=blues9)+
-#  xlab("Watershed")+
-#  ylab("Number of Species Present")
-```
-getting error, will work on it later
 
+ggplot(A1, aes(x=Watershed,y=num_species),color=blues9,fill=blues9)+
+     geom_col()+
+  xlab("Watershed")+
+  ylab("Number of Species Present")
+```
 
 ###Analysis 2:
 
@@ -268,6 +271,20 @@ This plot shows that the only significant difference in weights is found between
 
 9. replot data to show key relationships
 
+Show only sig differences found in Test 3
+
+```{r}
+sumDat<-A2P%>%
+  group_by(Watershed)%>%
+  summarise(meanWT=mean(avg_Weight))
+
+ggplot(A2P,aes(x=avg_Weight,y=Watershed),colour="black")+
+  geom_point()+
+  geom_vline(xintercept = mean(A2P$avg_Weight, na.rm=TRUE), colour="black", lty="dashed")+
+  geom_point(data=sumDat,aes(x=meanWT,y=Watershed),shape="diamond", colour="blue", size=4)
+  
+```
+This figure shows the mean weight per watershed (symbolized by the blue diamond) and how far away it is from the overall mean weight for the species PMMA (symbolized by the dotted black line).
 
 
 ###Analysis 3:
@@ -350,21 +367,21 @@ There was not a significant difference found, therefore there aren't really key 
 
 ##Biological Summary:
 
-circle back to your introductory material and present a concise summary of what you found
+I found that for my analysis 1 and 3 there were no significant differences found. There was not a significant difference in the number of species found in each watershed (analysis 1) and there was not a significant difference in species diversity in each watershed (analysis 3) either. In analysis 2 I performed 3 identical tests on three different species, the third of which ended up yeilding a significant result.
+There was a significant difference between mean PMMA weights per watersheds, specifically between mean weights found in watershed 20B and all other watersheds. This could be because watershed 20B has a 20 year burn replicate treatment, which is a lot longer between burns than the other burn replicate treatments. This could allow plant litter to accumulate, larger plants to establish, etc. The only watershed that comes close to this timeframe is the R20A watershed, which means they changed the treatment from an annual burn to a 20-year burn replicate. The weights of PMMA animals were not signficantly different than the other watersheds however for a few possible reasons. The change from annual burn to 20 year burn may have happened fairly recently, which would not have allowed time for plant litter to accumulate at the level it has on watershed 20B. 
 
 
 ##Challenges:
 
-The error messages have been a struggle in the analysis section.
+There were a number of challenges I faced throughout this project, including:
 
-Working on VPN is difficult as well because it kicks me off a lot.
+- The error messages have been a struggle in the analysis section.
 
-Learning how to make the data frame for analysis 3 and all the work and trial and error that went into that.
--Shannon diversity index and vegan package
+- Working on VPN is difficult as well because it kicks me off a lot.
 
-glm things
+- Learning how to make the data frame for analysis 3 and all the work and trial and error that went into that.
+  - Shannon diversity index and vegan package
 
+- glm things
 
-
-each of you have been taking a different approach in your Cap DAP; what did you have to figure out/learn/explore that was unique to your situation and that reflects new knowledge you gained that was not covered as a topic in lecture?  
-
+- making beautiful figures

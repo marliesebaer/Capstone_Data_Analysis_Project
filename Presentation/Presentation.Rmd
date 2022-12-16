@@ -1,0 +1,551 @@
+---
+title: "Presentation"
+author: "Marliese"
+date: "11/29/2022"
+output: html_document
+---
+
+
+#1. What is the data set you used? Give us a description of where the data come from and what they are about. 
+
+First lets set things up
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+library(ggfortify)
+library(readr)
+```
+
+```{r}
+DF <- read.csv(here("Data", "CapDAP_data.csv"))
+```
+
+##a. Why did you select this data set? 
+
+It is small mammal data and I am in a mammalogy class, so I was interested.
+
+##b. Who collected the data? Why? 
+
+Andrew Hope collected this data. The metadata doesn't explicitly say why, but from the title I am guessing they collected it to compare between species and between the 16 linear trapping transects in the 8 burn treatment watersheds in Konza Prarie. They could be comparing a number of things, but because they are looking at "small mammal host-parasite sampling data" I think they will be testing the presence and absence of specific parasites in different species and in different watersheds.
+
+
+Data Citation: Hope, A. 2019. CSM08 Small mammal host-parasite sampling data for 16 linear trapping transects located in 8 LTER burn treatment watersheds at Konza Prairie ver 3. Environmental Data Initiative. https://doi.org/10.6073/pasta/69109c56fcf21a30a8d37369cb47f8de (Accessed 2022-11-30).
+
+##c. What are the data measuring? 
+
+The data are measuring a lot of different things, including (but not limited to) the year of the sample, the date it was collected, the watershed (and therefore burn treatment), the transect within the watershed, the trap station within the transect, the species trapped (recorded as species code), the ear tag number, the specimen voucher number if it is going to a museum, the recapture status, the total length of the animal, the tail length of the animal, the hind foot length, the ear length, the weight, the sex, the age, and the reproductive condition.
+
+
+
+#2. What questions did you ask with your data? For each hypothesis you investigated, walk us through your process: 
+
+##hypothesis 1:
+
+###a. Were there issues in the data that needed repair? How did you fix the issues? 
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+library(ggfortify)
+library(readr)
+```
+
+Now let's pull in the data
+```{r}
+DF <- read.csv(here("Data", "CapDAP_data.csv"))
+```
+
+1. Make Watershed and species a factor variable
+```{r}
+DF$Watershed<-as.factor(DF$Watershed)
+DF$Species<-as.factor(DF$Species)
+```
+
+
+2. look at the levels
+```{r}
+levels(DF$Watershed)
+levels(DF$Species)
+```
+
+Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
+
+Well done! And this is why metadata are so important!
+
+3. fix levels of watershed
+```{r}
+fix <- which(DF$Watershed == "SPB")
+DF$Watershed[fix]<-"SpB"
+```
+
+R still thinks there are 9 levels. Lets relevel them by making Watershed a factor variable again.
+
+4. relevel
+```{r}
+DF$Watershed <-factor(DF$Watershed)
+levels(DF$Watershed)
+```
+
+5. plot expected relationship
+```{r}
+ggplot(DF, aes(x = Watershed,  y = Species))+
+     geom_point()+
+     theme_bw()
+```
+As this plot shows, not all species are found in each watershed.
+
+6. make a new dataframe to show just number of species found in each watershed
+
+```{r}
+newdata<-DF%>%
+group_by(Watershed)%>%
+  summarise(
+    num_species =
+length(unique(Species)))
+```
+
+7. Copy this new dataframe and put it in data folder
+```{r}
+write.csv(newdata, here("Data","Processed Data","Ws_Num_Sp.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+```
+
+###b. What did the initial plot of your data look like and what relationship were you 
+expecting based on this plot? 
+
+1. pull in data
+
+```{r}
+A1 <- read.csv(here("Data", "Processed Data", "Ws_Num_Sp.csv"))
+```
+
+2. plot expected relationships
+
+```{r}
+ggplot(A1, aes(x = Watershed, y=num_species))+
+     geom_point()+
+  xlab("Watershed")+
+  ylab("Number of Species Present")
+```
+
+
+I think there will not be a significant difference in the number of species found in different watersheds.
+
+Null hypothesis (Ho): The number of species found in each watershed is equal (no significant difference).
+Alternate hypothesis (Ha): The number of species found in each watershed is not equal (significant difference).
+
+###c. What statistical test did you employ to test your hypothesis? Why did you select 
+that test? 
+
+explanatory = Watershed = categorical nominal
+response = length.unique.Species.. = discrete quantitative
+
+This will be a chi squared test because Watershed (the expanatory or predictor variable) is a categorical nominal variable and length.unique.Species.. (the response variable) is a quantitative discrete variable. (Based on the chart we were provided with.)
+
+###d. What was the outcome of your test? 
+
+5.a) make a matrix
+```{r}
+A1.mat<-xtabs(num_species~Watershed,data=A1)
+A1.mat
+```
+5.b) make the model
+```{r}
+A1.chi<-chisq.test(A1.mat)
+```
+
+```{r}
+names(A1.chi)
+A1.chi$expected
+A1.chi
+```
+
+Null hypothesis (Ho): The number of species found in each watershed is equal.
+Alternate hypothesis (Ha): The number of species found in each watershed is not equal.
+
+p-value=0.9665
+0.9665>0.05 fail to reject the null
+
+There is not a significant difference in the number of species found in each watershed based on a p-value of 0.9665.
+
+###i. Do you have pretty, final plot to show?
+
+Not yet, but I was told that a colorful bar plot would work fine.
+
+
+##hypothesis 2:
+
+###a. Were there issues in the data that needed repair? How did you fix the issues? 
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+library(ggfortify)
+library(readr)
+```
+
+```{r}
+DF <- read.csv(here("Data", "CapDAP_data.csv"))
+```
+
+
+1. look at variables and see if need to change them at all
+```{r}
+
+DF$Watershed<-as.factor(DF$Watershed)
+DF$Weight<-as.numeric(DF$Weight)
+```
+The warning means R changed blank values to NA.
+
+
+2. look at the levels
+```{r}
+levels(DF$Watershed)
+levels(DF$Weight) #not actually something you can look at but I put it in just to be thorough
+```
+
+Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
+
+3. fix levels of watershed
+```{r}
+fix <- which(DF$Watershed == "SPB")
+DF$Watershed[fix]<-"SpB"
+```
+
+R still thinks there are 9 levels. Lets relevel them by making Watershed a factor variable again.
+
+4. relevel
+```{r}
+DF$Watershed <-factor(DF$Watershed)
+levels(DF$Watershed)
+```
+
+5. plot expected relationship
+```{r}
+ggplot(DF, aes(Watershed, Weight))+
+     geom_boxplot()+
+     geom_point(size = 2, alpha = 0.5, position = "jitter")+
+        facet_wrap(~Species)
+```
+
+As this plot shows, there are a lot of other things going on. To get rid of some of this noise I am going to subset to look at individuals that are Adults, and only look at a few species.
+
+6. make age and species factor variables bc I will be using them
+```{r}
+DF$Species<-as.factor(DF$Species)
+DF$Age<-as.factor(DF$Age)
+```
+
+7. look at the levels of Age (I know the levels of Species are good bc I looked at them in part 1)
+```{r}
+levels(DF$Age)
+```
+
+Okay, so I looked at the metadata and based on that I am going to fix some things
+
+8. fix levels
+```{r}
+no <- which(DF$Age == "JUV"| DF$Age == "J")
+DF$Age[no]<-"Juv"
+
+nah <- which(DF$Age == "?")
+DF$Age[nah]<-""
+```
+
+9. relevel
+```{r}
+DF$Age <-factor(DF$Age)
+levels(DF$Age)
+```
+
+That looks better. There is still a weird "SJ" (which I am assuming to mean sub-juvenile but the metadata doesn't actually clarify). If I was going to look at Weight in relation to age, which would be interesting, I would omit "SJ" and "", however because I am just going to be looking at Adults I am going to leave it.
+
+
+10. make a new dataframe to show just number of species found in each watershed
+
+I am going to break it up into steps
+
+10.a) subset just adults
+```{r}
+adults<-DF%>%
+        filter(Age=="A")
+```
+
+look at the spread now
+```{r}
+ggplot(adults, aes(Watershed, Weight, Transect))+
+     geom_boxplot()+
+     geom_point(size = 2, alpha = 0.5, position = "jitter")+
+        facet_wrap(~Species)
+```
+
+Looks good but we can make it better.
+
+10.b) subset to specific species
+```{r}
+OldSpp<-adults%>%
+  filter(Species=="SIHI"|Species=="MIOC")
+```
+
+look at spread
+```{r}
+ggplot(OldSpp, aes(Watershed, Weight))+
+     geom_boxplot()+
+     geom_point(size = 2, alpha = 0.5, position = "jitter")+
+        facet_wrap(~Species)
+```
+
+Okay, this looks better. I am going to keep these two species. But first I need to separate them out into different dataframes.
+
+```{r}
+OldSIHI<-adults%>%
+  filter(Species=="SIHI")
+
+OldMIOC<-adults%>%
+  filter(Species=="MIOC")
+```
+
+10.c) omit na values so I can proceed
+```{r}
+OldSIHI <- OldSIHI[!(is.na(OldSIHI$Weight)), ]
+OldMIOC <- OldMIOC[!(is.na(OldMIOC$Weight)), ]
+```
+
+
+10.d) make new dataframes
+```{r}
+SIHI_Ws_AvgW<-OldSIHI%>%
+  group_by(Watershed)%>%
+  summarise(
+    avg_Weight=mean(Weight))
+```
+
+```{r}
+MIOC_Ws_AvgW<-OldMIOC%>%
+  group_by(Watershed)%>%
+  summarise(
+    avg_Weight=mean(Weight))
+```
+
+
+11. Copy this new dataframe and put it in data folder
+```{r}
+write.csv(SIHI_Ws_AvgW, here("Data","Processed Data","SIHI_Ws_AvgW.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+
+write.csv(MIOC_Ws_AvgW, here("Data","Processed Data","MIOC_Ws_AvgW.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+```
+
+
+###b. What did the initial plot of your data look like and what relationship were you 
+expecting based on this plot? 
+
+```{r}
+A2 <- read.csv(here("Data", "Processed Data", "SIHI_Ws_AvgW.csv"))
+```
+
+```{r}
+A2$Watershed<-as.factor(A2$Watershed)
+```
+
+```{r}
+ggplot(A2, aes(x = Watershed, y=avg_Weight))+
+     geom_point()+
+  xlab("Watershed")+
+  ylab("Avgerage Weight")
+```
+
+
+I think there will not be a significant difference in the average weight of animals (SIHI and MIOC) found in different watersheds.
+
+Null hypothesis (Ho): The average weight of these species found in each watershed is equal (no significant difference).
+Alternate hypothesis (Ha): The average weight of these species found in each watershed is not equal (significant difference).
+
+
+###c. What statistical test did you employ to test your hypothesis? Why did you select 
+that test? 
+
+As this data is currently, this is a one-way anova. This is the correct test because the response variable (or y) is average weight which is a quantitative continuous variable, and the predictor/explanatory (or x) is Watershed which is categorical. I am asking about difference in group means, which makes this an anova. 
+If I wanted this to be a two-way anova, I would have to add another categorical variable (column) to the dataframe that could also impact weight, and could be influenced by or influence watershed.
+
+###d. What was the outcome of your test? 
+
+Unfortunately, I ran into errors because I did not put replication into my processed data, so now I am going back and trying to figure that out.
+
+###i. Do you have pretty, final plot to show?
+
+Not yet.
+
+
+
+##hypothesis 3:
+
+
+
+###a. Were there issues in the data that needed repair? How did you fix the issues? 
+
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+library(ggfortify)
+library(readr)
+```
+
+Now let's pull in the data
+```{r}
+DF <- read.csv(here("Data", "CapDAP_data.csv"))
+```
+
+1. Make Watershed and species a factor variable
+```{r}
+DF$Watershed<-as.factor(DF$Watershed)
+DF$Species<-as.factor(DF$Species)
+DF$Transect<-as.factor(DF$Transect)
+```
+
+
+2. look at the levels
+```{r}
+levels(DF$Watershed)
+levels(DF$Species)
+```
+
+Initially, SpB and SPB look to me to be the same, and after looking at the metadata I am confident they are. So I am going to fix that really quick before moving on.
+
+3. fix levels of watershed
+```{r}
+fix <- which(DF$Watershed == "SPB")
+DF$Watershed[fix]<-"SpB"
+```
+
+R still thinks there are 9 levels. Lets relevel them by making Watershed a factor variable again.
+
+4. relevel
+```{r}
+DF$Watershed <-factor(DF$Watershed)
+levels(DF$Watershed)
+```
+
+5. plot expected relationship
+```{r}
+ggplot(DF, aes(x = Watershed,  y = Species))+
+     geom_point()+
+     theme_bw()
+```
+
+6. subset data so only have dataframe w/ date, watershed, transect, and species. Look at that dataframa and then create another dataframe, and add a column w the number of individuals per species per transect in each watershed.
+```{r}
+DWTS<-DF%>%
+  subset(select=c(Date,Watershed,Transect,Species))
+
+try<-DF%>%
+  subset(select=c(Date,Watershed,Species))%>%
+  group_by(Watershed,Species)%>%
+  summarise(
+    length(Species))
+```
+
+
+7. make length(Species) a numeric variable bc vegan gives a lot of errors if things aren't
+```{r}
+try$`length(Species)`<-as.numeric(try$`length(Species)`)
+```
+
+8. try to pivot_wider just the species column so each species is a column header and the value in the cells are the number of inidivids
+```{r}
+WTS_wide<-try%>%
+  pivot_wider(names_from = "Species", values_from = "length(Species)") 
+```
+
+9. use vegan package to get Shannon index and Simpson index
+
+9.a) first load vegan
+```{r}
+library(vegan)
+library(ggvegan)
+```
+
+9.b) lets try some things to get the shannon diversity index
+
+okay make NA = 0 in WTS_wide
+```{r}
+WTS_wide[is.na(WTS_wide)] = 0
+```
+
+run shannon diversity index on that
+```{r}
+Sh_div<-diversity(WTS_wide[-1], index="shannon")
+```
+
+10. add that column to dataframe!!!
+```{r}
+WTS_wide$Sh_div <-Sh_div
+```
+
+11. Copy this new dataframe and put it in processed data folder 
+```{r}
+write.csv(WTS_wide, here("Data","Processed Data","Ws_Sp_Shannon.csv"), row.names = FALSE) #row.names=FALSE means please dont make X column where it has numbered the rows
+```
+
+
+
+###b. What did the initial plot of your data look like and what relationship were you 
+expecting based on this plot? 
+
+```{r}
+DivShan <- read.csv(here("Data", "Processed Data", "Ws_Sp_Shannon.csv"))
+```
+
+```{r}
+ggplot(DivShan, aes(x = Watershed, y=Sh_div))+
+     geom_point()+
+  xlab("Watershed")+
+  ylab("Shannon Diversity Index")
+```
+
+I expect there will be a significant difference between the Shannon diversity indexes in different watersheds.
+
+Null hypothesis (Ho): The Shannon diversity indexes calculated for each watershed is equal (no significant difference).
+Alternate hypothesis (Ha): The Shannon diversity indexes calculated for each watershed is not equal (significant difference).
+
+
+###c. What statistical test did you employ to test your hypothesis? Why did you select 
+that test? 
+
+This test is an anova using glm. This is the correct test because the response variable (or y) is the Shannon diversity index which is a quantitative continuous variable, and the predictor/explanatory (or x) is Watershed which is categorical. I am using glm() because this data doesn't fit the linear model (lm()) distribution requirements.
+
+###i. If it was NOT one of the tests we learned in class, tell us a little bit about 
+the test and what it does. 
+
+It will just run the anova more accurately as a glm because this data doesn't fit the normal distribution curve. 
+
+###d. What was the outcome of your test? 
+
+Unfortunately, I ran into errors because I did not put replication into my processed data, so now I am going back and trying to figure that out.
+
+
+###i. Do you have pretty, final plot to show? 
+
+Not yet.
+
+
+
+#3. What were your learning take-home messages from conducting this analysis? 
+
+Make sure you go through and check that the data you will be using for the analysis, has everything the analysis needs to run.
+
+##a. What do you want your future self to remember? 
+
+A lot of the time, the issue is something to do with NA values or the type of variable you are working with. Go back and look at the basics before trying to fix something fancy.
+
+##b. Is there anything you would do differently next time? 
+
+Not work on VPN. Be very thorough when choosing questions to analyze.
+
+##c. Is there anything you would do differently in collecting or recording your own 
+data as a result of what you’ve learned from this project? 
+
+Not collect extraneous variables.
