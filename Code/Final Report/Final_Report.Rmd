@@ -1,8 +1,10 @@
 ---
-title: "CapDAP_analysis"
-author: "Marliese"
+title: "CapDAP - Small Mammal Diversity Data in the Konza Prarie"
+author: "Marliese Baer"
 date: "11/14/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ##Introduction:
@@ -311,8 +313,6 @@ ggplot(DivShan, aes(x = Watershed, y=Sh_div))+
      geom_boxplot()+
   xlab("Watershed")+
   ylab("Shannon Diversity Index")
-
-#plot mean line of shannon index, and bigger dot of watershed mean
 ```
 
  
@@ -384,4 +384,4 @@ There were a number of challenges I faced throughout this project, including:
 
 - glm things
 
-- making beautiful figures
+- making "beautiful" figures
